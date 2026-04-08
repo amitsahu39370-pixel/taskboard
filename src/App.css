@@ -1,15 +1,9 @@
-/* ══════════════════════════════════════════════
-   Auth Pages
-══════════════════════════════════════════════ */
+
 .auth-page {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background:
-    radial-gradient(ellipse 90% 60% at 50% -5%, rgba(124, 110, 247, 0.22) 0%, transparent 65%),
-    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(0, 200, 150, 0.08) 0%, transparent 60%),
-    var(--bg-base);
   padding: 24px;
 }
 
@@ -46,7 +40,7 @@
 }
 
 /* Subtle top glow on card */
-.auth-card::before {
+/* .auth-card::before {
   content: '';
   position: absolute;
   top: -1px;
@@ -56,7 +50,7 @@
   height: 2px;
   background: linear-gradient(90deg, transparent, rgba(124, 110, 247, 0.7), transparent);
   border-radius: 99px;
-}
+} */
 
 .auth-brand {
   display: flex;
@@ -69,15 +63,15 @@
 .auth-logo {
   font-size: 2.6rem;
   line-height: 1;
-  filter: drop-shadow(0 0 16px rgba(124, 110, 247, 0.7));
-  animation: pulse 3s ease-in-out infinite;
+  /* filter: drop-shadow(0 0 16px rgba(124, 110, 247, 0.7)); */
+  /* animation: pulse 3s ease-in-out infinite; */
 }
 
 .auth-app-name {
   font-size: 1.7rem;
   font-weight: 900;
   letter-spacing: -0.03em;
-  background: linear-gradient(135deg, #c4b5fd, #7c6ef7, #38bdf8);
+  background: white;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -182,20 +176,20 @@ body.is-dragging .board-layout {
   font-size: 1.05rem;
   font-weight: 800;
   letter-spacing: -0.02em;
-  background: linear-gradient(135deg, #c4b5fd, #7c6ef7);
+  background: white;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 /* Live indicator dot */
-.header__live-dot {
+/* .header__live-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   flex-shrink: 0;
   transition: background var(--transition-slow), box-shadow var(--transition-slow);
-}
+} */
 
 .header__live-dot--on {
   background: var(--col-done);
@@ -570,8 +564,8 @@ body.is-dragging .board-layout {
 .column__add-btn:hover {
   background: var(--col-accent);
   color: #fff;
-  transform: scale(1.08);
-  box-shadow: 0 0 12px var(--col-accent);
+  transform: scale(1.02);
+  box-shadow: 0 0 2px var(--col-accent);
 }
 
 .column__add-btn:active {
@@ -659,10 +653,9 @@ body.is-dragging .board-layout {
 .task-card.dragging {
   cursor: grabbing;
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
-  transform: rotate(1.2deg) scale(1.03);
   border-color: var(--accent);
   z-index: 999;
-  background: var(--bg-card-hover);
+  /* background: var(--bg-card-hover); */
   /* Disable all transitions while dragging — they fire on every
      pixel of movement and are the primary source of jank */
   transition: none;
@@ -671,7 +664,7 @@ body.is-dragging .board-layout {
 }
 
 /* Left status colour strip */
-.task-card__strip {
+/* .task-card__strip {
   position: absolute;
   left: 0;
   top: 8px;
@@ -685,7 +678,7 @@ body.is-dragging .board-layout {
 
 .task-card:hover .task-card__strip {
   opacity: 1;
-}
+} */
 
 .task-card__drag-grip {
   position: absolute;
