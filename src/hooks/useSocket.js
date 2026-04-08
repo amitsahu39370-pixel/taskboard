@@ -23,25 +23,25 @@ export default function useSocket() {
 
     const onConnect = () => {
       setConnected(true);
-      lostToastShown.current = false;
-      console.log('🟢 Socket connected:', socket.id);
+      console.log(' Socket connected:', socket.id);
     };
 
     const onDisconnect = (reason) => {
       setConnected(false);
-      console.log('🔴 Socket disconnected:', reason);
+      lostToastShown.current = true;
+      console.log(' Socket disconnected:', reason);
     };
 
     const onConnectError = (err) => {
       setConnected(false);
-      console.warn('Socket connect_error:', err.message);
-      if (!lostToastShown.current) {
-        lostToastShown.current = true;
-      }
+      lostToastShown.current = true;
     };
 
     const onReconnect = () => {
-      console.log('🟡 Socket reconnected');
+      if (!lostToastShown.current) return;
+
+      console.log(' Socket reconnected');
+      lostToastShown.current = false;
       toast.info('Real-time sync restored');
       fetchTasks();
     };
@@ -53,7 +53,7 @@ export default function useSocket() {
     socket.on('connect',       onConnect);
     socket.on('disconnect',    onDisconnect);
     socket.on('connect_error', onConnectError);
-    socket.io.on('reconnect',  onReconnect);
+    socket.on('reconnect',     onReconnect);
 
     socket.on('task:created', onTaskCreated);
     socket.on('task:updated', onTaskUpdated);
@@ -63,7 +63,7 @@ export default function useSocket() {
       socket.off('connect',       onConnect);
       socket.off('disconnect',    onDisconnect);
       socket.off('connect_error', onConnectError);
-      socket.io.off('reconnect',  onReconnect);
+      socket.off('reconnect',     onReconnect);
 
       socket.off('task:created', onTaskCreated);
       socket.off('task:updated', onTaskUpdated);

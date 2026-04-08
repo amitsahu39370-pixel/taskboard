@@ -746,10 +746,17 @@ body.is-dragging .board-layout {
   gap: 2px;
   opacity: 0;
   transition: opacity var(--transition);
+  pointer-events: none;
 }
 
 .task-card:hover .task-card__actions {
   opacity: 1;
+  pointer-events: auto;
+}
+
+.task-card:focus-within .task-card__actions {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .task-card__btn-edit {
@@ -778,7 +785,7 @@ body.is-dragging .board-layout {
   .board-columns {
   grid-template-columns: 1fr;
   height: auto;
-  overflow: auto;
+  overflow: visible;
 
   /* Hide scrollbar for Chrome, Safari, Edge */
   scrollbar-width: none;        /* Firefox */
@@ -788,6 +795,29 @@ body.is-dragging .board-layout {
 .board-columns::-webkit-scrollbar {
   display: none; /* Chrome, Safari */
 }
+
+  .board-main {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .column {
+    min-height: 0;
+    overflow-y: visible;
+  }
+
+  .column__list,
+  .column__list--virtual {
+    overflow-y: visible;
+    max-height: none;
+  }
+
+  .task-card {
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
 
   .board-main {
     padding: 16px;

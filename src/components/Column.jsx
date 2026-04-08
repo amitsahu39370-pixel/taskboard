@@ -55,7 +55,7 @@ function EmptyIcon({ status, color }) {
   );
 }
 
-const VirtualList = memo(function VirtualList({ tasks, provided, snapshot }) {
+const VirtualList = memo(function VirtualList({ tasks, snapshot }) {
   const parentRef = useRef(null);
 
   const rowVirtualizer = useVirtualizer({
@@ -94,12 +94,12 @@ const VirtualList = memo(function VirtualList({ tasks, provided, snapshot }) {
           );
         })}
       </div>
-      {provided.placeholder}
+      {/* {provided.placeholder} */}
     </div>
   );
 });
 
-const StandardList = memo(function StandardList({ tasks, provided, snapshot }) {
+const StandardList = memo(function StandardList({ tasks, snapshot }) {
   return (
     <div
       className={`column__list${snapshot.isDraggingOver ? ' drag-over' : ''}`}
@@ -107,7 +107,7 @@ const StandardList = memo(function StandardList({ tasks, provided, snapshot }) {
       {tasks.map((task, index) => (
         <TaskCard key={task._id} task={task} index={index} />
       ))}
-      {provided.placeholder}
+      {/* {provided.placeholder} */}
     </div>
   );
 });
@@ -125,7 +125,11 @@ export default function Column({ status, totalTasks }) {
       {...provided2.draggableProps}
       {...provided2.dragHandleProps}
     >
-      <TaskCard task={tasks[rubric.source.index]} index={rubric.source.index} />
+      <TaskCard
+        task={tasks[rubric.source.index]}
+        index={rubric.source.index}
+        isDraggable={false}
+      />
     </div>
   ), [tasks]);
 
@@ -188,11 +192,13 @@ export default function Column({ status, totalTasks }) {
 
               {tasks.length > 0 && (
                 useVirtual
-                  ? <VirtualList tasks={tasks} provided={provided} snapshot={snapshot} />
-                  : <StandardList tasks={tasks} provided={provided} snapshot={snapshot} />
+                  ? <VirtualList tasks={tasks} snapshot={snapshot} />
+                  : <StandardList tasks={tasks} snapshot={snapshot} />
               )}
 
-              {provided.placeholder}
+              <div aria-hidden="true" style={{ height: 0, overflow: 'hidden' }}>
+                {provided.placeholder}
+              </div>
             </div>
           )}
         </Droppable>
