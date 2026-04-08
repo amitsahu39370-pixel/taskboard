@@ -69,11 +69,7 @@ const VirtualList = memo(function VirtualList({ tasks, provided, snapshot }) {
 
   return (
     <div
-      ref={(el) => {
-        provided.innerRef(el);
-        parentRef.current = el;
-      }}
-      {...provided.droppableProps}
+      ref={parentRef}
       className={`column__list column__list--virtual${snapshot.isDraggingOver ? ' drag-over' : ''}`}
       style={{ overflowY: 'auto', overflowX: 'hidden' }}
     >
@@ -106,8 +102,6 @@ const VirtualList = memo(function VirtualList({ tasks, provided, snapshot }) {
 const StandardList = memo(function StandardList({ tasks, provided, snapshot }) {
   return (
     <div
-      ref={provided.innerRef}
-      {...provided.droppableProps}
       className={`column__list${snapshot.isDraggingOver ? ' drag-over' : ''}`}
     >
       {tasks.map((task, index) => (
@@ -160,23 +154,28 @@ export default function Column({ status, totalTasks }) {
           </button>
         </div>
 
-        <div
-          className="column__progress-track"
-          role="progressbar"
-          aria-valuenow={pct}
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-label={`${pct}% of all tasks`}
-        >
-          <div className="column__progress-fill" style={{ width: `${pct}%` }} />
-        </div>
-
         <Droppable
           droppableId={status}
           renderClone={renderClone}
         >
           {(provided, snapshot) => (
-            <>
+            <div
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+              className={`column__content${snapshot.isDraggingOver ? ' drag-over' : ''}`}
+              style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}
+            >
+              <div
+                className="column__progress-track"
+                role="progressbar"
+                aria-valuenow={pct}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label={`${pct}% of all tasks`}
+              >
+                <div className="column__progress-fill" style={{ width: `${pct}%` }} />
+              </div>
+
               {tasks.length === 0 && !snapshot.isDraggingOver && (
                 <div className="empty-state" aria-label="No tasks">
                   <div className="empty-state__icon">
@@ -184,13 +183,6 @@ export default function Column({ status, totalTasks }) {
                   </div>
                   <p className="empty-state__title">No tasks here</p>
                   <p className="empty-state__hint">{config.hint}</p>
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                    style={{ height: 0, overflow: 'hidden' }}
-                  >
-                    {provided.placeholder}
-                  </div>
                 </div>
               )}
 
@@ -199,7 +191,9 @@ export default function Column({ status, totalTasks }) {
                   ? <VirtualList tasks={tasks} provided={provided} snapshot={snapshot} />
                   : <StandardList tasks={tasks} provided={provided} snapshot={snapshot} />
               )}
-            </>
+
+              {provided.placeholder}
+            </div>
           )}
         </Droppable>
       </div>

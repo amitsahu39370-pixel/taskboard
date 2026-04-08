@@ -489,7 +489,6 @@ body.is-dragging .board-layout {
   flex-direction: column;
   background: var(--bg-surface);
   border: 1px solid var(--border);
-  border-top: 3px solid var(--col-accent);
   border-radius: var(--radius-lg);
   /* Do NOT use overflow:hidden here — it clips the inner scrollable list.
      Instead, clip only the horizontal axis. The column fills the grid cell
@@ -616,6 +615,10 @@ body.is-dragging .board-layout {
 }
 
 .column__list.drag-over {
+  background: var(--col-dim);
+}
+
+.column__content.drag-over {
   background: var(--col-dim);
 }
 
