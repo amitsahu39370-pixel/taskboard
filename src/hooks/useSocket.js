@@ -37,14 +37,13 @@ export default function useSocket() {
       console.warn('Socket connect_error:', err.message);
       if (!lostToastShown.current) {
         lostToastShown.current = true;
-        toast.warning('Real-time sync unavailable — retrying…');
       }
     };
 
     const onReconnect = () => {
       console.log('🟡 Socket reconnected');
       toast.info('Real-time sync restored');
-      fetchTasks(); // sync any missed updates
+      fetchTasks();
     };
 
     const onTaskCreated = (task) => socketCreate(task);

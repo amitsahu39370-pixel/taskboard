@@ -86,8 +86,6 @@ const TaskCard = memo(function TaskCard({ task, index }) {
           >
             <span className="task-card__strip" aria-hidden="true" />
 
-            <div className="task-card__drag-grip" aria-hidden="true">⋮⋮</div>
-
             <div className="task-card__body">
               <p className="task-card__title">{task.title}</p>
               {task.description && (

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import api from '../api/axios';
+import { fetchTasksSocket, createTaskSocket, updateTaskSocket, deleteTaskSocket } from '../api/socket';
 
 const useTaskStore = create((set, get) => ({
   tasks: [],
@@ -15,39 +15,37 @@ const useTaskStore = create((set, get) => ({
     set({ loading: true, error: null });
     try {
       const { search, filterStatus } = get();
-      const params = {};
-      if (search)       params.search = search;
-      if (filterStatus) params.status = filterStatus;
-      const { data } = await api.get('/tasks', { params });
-      set({ tasks: data.tasks, loading: false });
+      const response = await fetchTasksSocket(search, filterStatus);
+      set({ tasks: response.tasks, loading: false });
     } catch (err) {
-      set({ error: err.response?.data?.message || 'Failed to load tasks', loading: false });
+      set({ error: err.message || 'Failed to load tasks', loading: false });
     }
   },
 
   createTask: async (payload) => {
     try {
-      const { data } = await api.post('/tasks', payload);
+      const { title, description = '', status = 'todo' } = payload;
+      const response = await createTaskSocket(title, description, status);
       set((s) => {
-        const exists = s.tasks.some((t) => t._id === data.task._id);
+        const exists = s.tasks.some((t) => t._id === response.task._id);
         if (exists) return s;
-        return { tasks: [data.task, ...s.tasks] };
+        return { tasks: [response.task, ...s.tasks] };
       });
-      return { success: true, task: data.task };
+      return { success: true, task: response.task };
     } catch (err) {
-      return { success: false, message: err.response?.data?.message || 'Failed to create task' };
+      return { success: false, message: err.message || 'Failed to create task' };
     }
   },
 
   updateTask: async (id, payload) => {
     try {
       const current = get().tasks.find((t) => t._id === id);
-      const res = await api.put(`/tasks/${id}`, {
+      const response = await updateTaskSocket(id, {
         ...payload,
         clientUpdatedAt: current?.updatedAt,
       });
 
-      const updatedTask = res.data.task;
+      const updatedTask = response.task;
 
       set((s) => ({
         tasks: [updatedTask, ...s.tasks.filter((t) => t._id !== id)],
@@ -55,11 +53,10 @@ const useTaskStore = create((set, get) => ({
 
       return { success: true, task: updatedTask };
     } catch (err) {
-      const status  = err.response?.status;
-      const msg     = err.response?.data?.message || 'Failed to update task';
+      const msg = err.message || 'Failed to update task';
 
-      if (status === 409 && err.response?.data?.task) {
-        const latest = err.response.data.task;
+      if (err.conflict && err.task) {
+        const latest = err.task;
         set((s) => ({
           tasks: s.tasks.map((t) => (t._id === latest._id ? latest : t)),
         }));
@@ -78,11 +75,11 @@ const useTaskStore = create((set, get) => ({
     const prev = get().tasks;
     set((s) => ({ tasks: s.tasks.filter((t) => t._id !== id) }));
     try {
-      await api.delete(`/tasks/${id}`);
+      await deleteTaskSocket(id);
       return { success: true };
     } catch (err) {
       set({ tasks: prev });
-      return { success: false, message: err.response?.data?.message || 'Failed to delete task' };
+      return { success: false, message: err.message || 'Failed to delete task' };
     }
   },
 

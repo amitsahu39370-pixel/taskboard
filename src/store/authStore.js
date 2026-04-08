@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import api from '../api/axios';
+import { setSocketAuth } from '../api/socket';
 
 const useAuthStore = create((set) => ({
   user:    JSON.parse(localStorage.getItem('user') || 'null'),
@@ -12,7 +13,9 @@ const useAuthStore = create((set) => ({
     try {
       const { data } = await api.post('/auth/register', { name, email, password });
       localStorage.setItem('token', data.token);
-      localStorage.setItem('user',  JSON.stringify(data.user));
+      localStorage.setItem('user', JSON.stringify(data.user));
+      setSocketAuth(data.token);
+      
       set({ user: data.user, token: data.token, loading: false });
       return { success: true };
     } catch (err) {
@@ -27,7 +30,9 @@ const useAuthStore = create((set) => ({
     try {
       const { data } = await api.post('/auth/login', { email, password });
       localStorage.setItem('token', data.token);
-      localStorage.setItem('user',  JSON.stringify(data.user));
+      localStorage.setItem('user', JSON.stringify(data.user));
+      setSocketAuth(data.token);
+      
       set({ user: data.user, token: data.token, loading: false });
       return { success: true };
     } catch (err) {
